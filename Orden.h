@@ -3,35 +3,68 @@
 
 #include <iostream>
 #include <string>
+#include "EloquentORM.h"
+
 using namespace std;
 
-class Orden {
-private:
-    int id;
-    int clienteId;
-    string fecha;
-
+class Orden : public EloquentORM {
 public:
-    Orden() {}
-    Orden(int id, int clienteId, string fecha) {
-        this->id = id;
-        this->clienteId = clienteId;
-        this->fecha = fecha;
+    Orden() {
+        table = "ordenes";
     }
 
-    void set_id(int id) { this->id = id; }
-    int get_id() const { return id; }
+    void crear() {
+        int clienteId;
+        string fecha;
+        cout << "Ingrese ID del cliente: ";
+        cin >> clienteId;
+        cin.ignore();
+        cout << "Ingrese fecha (YYYY-MM-DD): ";
+        getline(cin, fecha);
 
-    void set_cliente_id(int clienteId) { this->clienteId = clienteId; }
-    int get_cliente_id() const { return clienteId; }
+        insert({
+            {"cliente_id", to_string(clienteId)},
+            {"fecha", fecha}
+        });
 
-    void set_fecha(string fecha) { this->fecha = fecha; }
-    string get_fecha() const { return fecha; }
+        cout << "Orden creada exitosamente.\n";
+    }
 
-    void crear();
-    void leer();
-    void actualizar();
-    void eliminar();
+    void leer() {
+        vector<map<string, string>> registros = getAll();
+
+        for (auto& fila : registros) {
+            cout << fila["id"] << " | Cliente ID: " << fila["cliente_id"] << " | Fecha: " << fila["fecha"] << endl;
+        }
+    }
+
+    void actualizar() {
+        int id, clienteId;
+        string fecha;
+        cout << "Ingrese ID de la orden: ";
+        cin >> id;
+        cout << "Nuevo ID del cliente: ";
+        cin >> clienteId;
+        cin.ignore();
+        cout << "Nueva fecha (YYYY-MM-DD): ";
+        getline(cin, fecha);
+
+        updateById(to_string(id), {
+            {"cliente_id", to_string(clienteId)},
+            {"fecha", fecha}
+        });
+
+        cout << "Orden actualizada.\n";
+    }
+
+    void eliminar() {
+        int id;
+        cout << "Ingrese ID de la orden a eliminar: ";
+        cin >> id;
+
+        removeById(to_string(id));
+        cout << "Orden eliminada.\n";
+    }
 };
 
 #endif

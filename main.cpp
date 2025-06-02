@@ -1,150 +1,114 @@
 #include <iostream>
-#include <windows.h> // Para colores en consola de Windows
-using namespace std;
-
-// incluir clases
 #include "Cliente.h"
 #include "Producto.h"
-#include "Orden.h"  
+#include "Orden.h"
 #include "DetalleOrden.h"
+#include "MySQLConexion.h"
+#include "EloquentORM.h"
 
-// Función para establecer color en consola
-void set_color(int color) {
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+using namespace std;
+
+void menu_cliente(Cliente &cliente) {
+    int opcion;
+    do {
+        cout << "\n-- Menu Cliente --\n";
+        cout << "1. Crear cliente\n2. Ver clientes\n3. Actualizar cliente\n4. Eliminar cliente\n5. Volver\n";
+        cout << "Elija opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1: cliente.crear(); break;
+            case 2: cliente.leer(); break;
+            case 3: cliente.actualizar(); break;
+            case 4: cliente.eliminar(); break;
+        }
+    } while (opcion != 5);
 }
 
-// Función para mostrar el menú principal
-void mostrar_menu() {
-    set_color(11); // Azul claro
-    cout << "\n==============================\n";
-    cout << "     SISTEMA DE CLIENTES\n";
-    cout << "==============================\n";
-    set_color(15); // Blanco
-    cout << "1. Gestionar Clientes\n";
-    cout << "2. Gestionar Productos\n";
-    cout << "3. Gestionar Ordenes\n";
-    cout << "4. Gestionar Detalles de Orden\n";
-    cout << "0. Salir\n";
-    cout << "Seleccione una opcion: ";
+void menu_producto(Producto &producto) {
+    int opcion;
+    do {
+        cout << "\n-- Menu Producto --\n";
+        cout << "1. Crear producto\n2. Ver productos\n3. Actualizar producto\n4. Eliminar producto\n5. Volver\n";
+        cout << "Elija opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1: producto.crear(); break;
+            case 2: producto.leer(); break;
+            case 3: producto.actualizar(); break;
+            case 4: producto.eliminar(); break;
+        }
+    } while (opcion != 5);
 }
 
-// Submenú genérico para CRUD
-void mostrar_submenu(const string &entidad) {
-    set_color(10); // Verde claro
-    cout << "\n--- CRUD de " << entidad << " ---\n";
-    set_color(15);
-    cout << "1. Crear\n";
-    cout << "2. Leer\n";
-    cout << "3. Actualizar\n";
-    cout << "4. Eliminar\n";
-    cout << "0. Volver al menu principal\n";
-    cout << "Seleccione una opcion: ";
+void menu_orden(Orden &orden) {
+    int opcion;
+    do {
+        cout << "\n-- Menu Orden --\n";
+        cout << "1. Crear orden\n2. Ver ordenes\n3. Actualizar orden\n4. Eliminar orden\n5. Volver\n";
+        cout << "Elija opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1: orden.crear(); break;
+            case 2: orden.leer(); break;
+            case 3: orden.actualizar(); break;
+            case 4: orden.eliminar(); break;
+        }
+    } while (opcion != 5);
+}
+
+void menu_detalle_orden(DetalleOrden &detalle) {
+    int opcion;
+    do {
+        cout << "\n-- Menu Detalle Orden --\n";
+        cout << "1. Crear detalle\n2. Ver detalles\n3. Actualizar detalle\n4. Eliminar detalle\n5. Volver\n";
+        cout << "Elija opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1: detalle.crear(); break;
+            case 2: detalle.leer(); break;
+            case 3: detalle.actualizar(); break;
+            case 4: detalle.eliminar(); break;
+        }
+    } while (opcion != 5);
 }
 
 int main() {
-    int opcionMenu = -1;
 
-    while (opcionMenu != 0) {
-        mostrar_menu();
-        cin >> opcionMenu;
-        int opcionCRUD;
+    MySQLConexion conn("root", "150305", "sistema_clientes");
 
-        switch (opcionMenu) {
-            case 1: // Clientes
-                do {
-                    mostrar_submenu("Clientes");
-                    cin >> opcionCRUD;
-                    switch (opcionCRUD) {
-                        case 1:
-                            // cliente.crear();
-                            break;
-                        case 2:
-                            // cliente.leer();
-                            break;
-                        case 3:
-                            // cliente.actualizar();
-                            break;
-                        case 4:
-                            // cliente.eliminar();
-                            break;
-                    }
-                } while (opcionCRUD != 0);
-                break;
-
-            case 2: // Productos
-                do {
-                    mostrar_submenu("Productos");
-                    cin >> opcionCRUD;
-                    switch (opcionCRUD) {
-                        case 1:
-                            // producto.crear();
-                            break;
-                        case 2:
-                            // producto.leer();
-                            break;
-                        case 3:
-                            // producto.actualizar();
-                            break;
-                        case 4:
-                            // producto.eliminar();
-                            break;
-                    }
-                } while (opcionCRUD != 0);
-                break;
-
-            case 3: // Ordenes
-                do {
-                    mostrar_submenu("Ordenes");
-                    cin >> opcionCRUD;
-                    switch (opcionCRUD) {
-                        case 1:
-                            // orden.crear();
-                            break;
-                        case 2:
-                            // orden.leer();
-                            break;
-                        case 3:
-                            // orden.actualizar();
-                            break;
-                        case 4:
-                            // orden.eliminar();
-                            break;
-                    }
-                } while (opcionCRUD != 0);
-                break;
-
-            case 4: // Detalle de Orden
-                do {
-                    mostrar_submenu("Detalle de Orden");
-                    cin >> opcionCRUD;
-                    switch (opcionCRUD) {
-                        case 1:
-                            // detalleOrden.crear();
-                            break;
-                        case 2:
-                            // detalleOrden.leer();
-                            break;
-                        case 3:
-                            // detalleOrden.actualizar();
-                            break;
-                        case 4:
-                            // detalleOrden.eliminar();
-                            break;
-                    }
-                } while (opcionCRUD != 0);
-                break;
-
-            case 0:
-                set_color(12); // Rojo
-                cout << "\nSaliendo del sistema...\n";
-                break;
-
-            default:
-                set_color(14); // Amarillo
-                cout << "\nOpcion no valida. Intente de nuevo.\n";
-                break;
-        }
+    if (!conn.open()) {
+        cerr << "No se pudo conectar a la base de datos." << endl;
+        return 1;
+    } else {
+        cout << "Conexión establecida con la base de datos.\n";
     }
+
+    Cliente cliente;
+    Producto producto;
+    Orden orden;
+    DetalleOrden detalle;
+
+    int opcion;
+    do {
+        cout << "\n=== Sistema de Clientes y Órdenes ===\n";
+        cout << "1. Clientes\n2. Productos\n3. Ordenes\n4. Detalle de Orden\n5. Salir\n";
+        cout << "Seleccione una opción: ";
+        cin >> opcion;
+
+        switch(opcion) {
+            case 1: menu_cliente(cliente); break;
+            case 2: menu_producto(producto); break;
+            case 3: menu_orden(orden); break;
+            case 4: menu_detalle_orden(detalle); break;
+            case 5: cout << "Saliendo...\n"; break;
+            default: cout << "Opcion invalida.\n"; break;
+        }
+
+    } while (opcion != 5);
 
     return 0;
 }

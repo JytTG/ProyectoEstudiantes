@@ -2,36 +2,69 @@
 #define PRODUCTO_H
 
 #include <iostream>
-#include <string>
+#include "EloquentORM.h"
+
 using namespace std;
 
-class Producto {
-private:
-    int id;
-    string nombre;
-    double precio;
-
+class Producto : public EloquentORM {
 public:
-    Producto() {}
-    Producto(int id, string nombre, double precio) {
-        this->id = id;
-        this->nombre = nombre;
-        this->precio = precio;
+    Producto() {
+        table = "productos";
     }
 
-    void set_id(int id) { this->id = id; }
-    int get_id() const { return id; }
+    void crear() {
+        string nombre;
+        double precio;
+        cin.ignore();
+        cout << "Ingrese nombre del producto: ";
+        getline(cin, nombre);
+        cout << "Ingrese precio: ";
+        cin >> precio;
 
-    void set_nombre(string nombre) { this->nombre = nombre; }
-    string get_nombre() const { return nombre; }
+        insert({
+            {"nombre", nombre},
+            {"precio", to_string(precio)}
+        });
 
-    void set_precio(double precio) { this->precio = precio; }
-    double get_precio() const { return precio; }
+        cout << "Producto creado exitosamente.\n";
+    }
 
-    void crear();
-    void leer();
-    void actualizar();
-    void eliminar();
+    void leer() {
+        vector<map<string, string>> registros = getAll();
+
+        for (auto& fila : registros) {
+            cout << fila["id"] << " | " << fila["nombre"] << " | Q" << fila["precio"] << endl;
+        }
+    }
+
+    void actualizar() {
+        int id;
+        string nombre;
+        double precio;
+        cout << "Ingrese ID del producto: ";
+        cin >> id;
+        cin.ignore();
+        cout << "Nuevo nombre: ";
+        getline(cin, nombre);
+        cout << "Nuevo precio: ";
+        cin >> precio;
+
+        updateById(to_string(id), {
+            {"nombre", nombre},
+            {"precio", to_string(precio)}
+        });
+
+        cout << "Producto actualizado.\n";
+    }
+
+    void eliminar() {
+        int id;
+        cout << "Ingrese ID del producto a eliminar: ";
+        cin >> id;
+
+        removeById(to_string(id));
+        cout << "Producto eliminado.\n";
+    }
 };
 
 #endif

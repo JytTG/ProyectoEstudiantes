@@ -2,40 +2,67 @@
 #define CLIENTE_H
 
 #include <iostream>
-#include <string>
+#include "EloquentORM.h"
+
 using namespace std;
 
-class Cliente {
-private:
-    int id;
-    string nombre;
-    string correo;
-
+class Cliente : public EloquentORM {
 public:
-    // Constructor
-    Cliente() {}
-
-    Cliente(int id, string nombre, string correo) {
-        this->id = id;
-        this->nombre = nombre;
-        this->correo = correo;
+    Cliente() {
+        table = "clientes";
     }
 
-    // Getters y Setters
-    void set_id(int id) { this->id = id; }
-    int get_id() const { return id; }
+    void crear() {
+        string nombres, apellidos;
+        cin.ignore();
+        cout << "Ingrese nombres: ";
+        getline(cin, nombres);
+        cout << "Ingrese apellidos: ";
+        getline(cin, apellidos);
 
-    void set_nombre(string nombre) { this->nombre = nombre; }
-    string get_nombre() const { return nombre; }
+        insert({
+            {"nombres", nombres},
+            {"apellidos", apellidos}
+        });
 
-    void set_correo(string correo) { this->correo = correo; }
-    string get_correo() const { return correo; }
+        cout << "Cliente creado exitosamente.\n";
+    }
 
-    // Métodos CRUD
-    void crear();
-    void leer();
-    void actualizar();
-    void eliminar();
+    void leer() {
+        vector<map<string, string>> registros = getAll();
+
+        for (auto& fila : registros) {
+            cout << fila["id"] << " | " << fila["nombres"] << " " << fila["apellidos"] << endl;
+        }
+    }
+
+    void actualizar() {
+        int id;
+        string nombres, apellidos;
+        cout << "Ingrese ID del cliente: ";
+        cin >> id;
+        cin.ignore();
+        cout << "Nuevo nombre: ";
+        getline(cin, nombres);
+        cout << "Nuevo apellido: ";
+        getline(cin, apellidos);
+
+        updateById(to_string(id), {
+            {"nombres", nombres},
+            {"apellidos", apellidos}
+        });
+
+        cout << "Cliente actualizado.\n";
+    }
+
+    void eliminar() {
+        int id;
+        cout << "Ingrese ID del cliente a eliminar: ";
+        cin >> id;
+
+        removeById(to_string(id));
+        cout << "Cliente eliminado.\n";
+    }
 };
 
 #endif

@@ -1,41 +1,75 @@
-#ifndef DETALLE_ORDEN_H
-#define DETALLE_ORDEN_H
+#ifndef DETALLEORDEN_H
+#define DETALLEORDEN_H
 
 #include <iostream>
+#include <string>
+#include "EloquentORM.h"
+
 using namespace std;
 
-class DetalleOrden {
-private:
-    int id;
-    int ordenId;
-    int productoId;
-    int cantidad;
-
+class DetalleOrden : public EloquentORM {
 public:
-    DetalleOrden() {}
-    DetalleOrden(int id, int ordenId, int productoId, int cantidad) {
-        this->id = id;
-        this->ordenId = ordenId;
-        this->productoId = productoId;
-        this->cantidad = cantidad;
+    DetalleOrden() {
+        table = "detalle_orden";
     }
 
-    void set_id(int id) { this->id = id; }
-    int get_id() const { return id; }
+    void crear() {
+        int ordenId, productoId, cantidad;
+        cout << "Ingrese ID de la orden: ";
+        cin >> ordenId;
+        cout << "Ingrese ID del producto: ";
+        cin >> productoId;
+        cout << "Ingrese cantidad: ";
+        cin >> cantidad;
 
-    void set_orden_id(int ordenId) { this->ordenId = ordenId; }
-    int get_orden_id() const { return ordenId; }
+        insert({
+            {"orden_id", to_string(ordenId)},
+            {"producto_id", to_string(productoId)},
+            {"cantidad", to_string(cantidad)}
+        });
 
-    void set_producto_id(int productoId) { this->productoId = productoId; }
-    int get_producto_id() const { return productoId; }
+        cout << "Detalle de orden creado exitosamente.\n";
+    }
 
-    void set_cantidad(int cantidad) { this->cantidad = cantidad; }
-    int get_cantidad() const { return cantidad; }
+    void leer() {
+        vector<map<string, string>> registros = getAll();
 
-    void crear();
-    void leer();
-    void actualizar();
-    void eliminar();
+        for (auto& fila : registros) {
+            cout << "ID: " << fila["id"] 
+                 << " | Orden ID: " << fila["orden_id"] 
+                 << " | Producto ID: " << fila["producto_id"] 
+                 << " | Cantidad: " << fila["cantidad"] << endl;
+        }
+    }
+
+    void actualizar() {
+        int id, ordenId, productoId, cantidad;
+        cout << "Ingrese ID del detalle a actualizar: ";
+        cin >> id;
+        cout << "Nuevo ID de la orden: ";
+        cin >> ordenId;
+        cout << "Nuevo ID del producto: ";
+        cin >> productoId;
+        cout << "Nueva cantidad: ";
+        cin >> cantidad;
+
+        updateById(to_string(id), {
+            {"orden_id", to_string(ordenId)},
+            {"producto_id", to_string(productoId)},
+            {"cantidad", to_string(cantidad)}
+        });
+
+        cout << "Detalle de orden actualizado.\n";
+    }
+
+    void eliminar() {
+        int id;
+        cout << "Ingrese ID del detalle a eliminar: ";
+        cin >> id;
+
+        removeById(to_string(id));
+        cout << "Detalle de orden eliminado.\n";
+    }
 };
 
 #endif
